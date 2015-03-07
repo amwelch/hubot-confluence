@@ -19,7 +19,9 @@
   },
 
   "dependencies": {
-    "coffee-script": "*"
+    "nconf": "*",
+    "coffee-script": "*",
+    "btoa": "*"
   },
 
   "devDependencies": {
@@ -29,10 +31,8 @@
     "hubot": "*",
     "hubot-mock-adapter": "*",
     "sinon-chai": "*",
-    "nconf": "*",
     "nock": "*",
     "sinon": "*",
-    "btoa": "*"
   },
 
   "main": "index.coffee",
