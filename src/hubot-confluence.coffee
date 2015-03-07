@@ -94,7 +94,6 @@ module.exports = (robot) ->
 
   robot.hear /confluence show triggers/i, (msg) ->
     msg.send triggers.join('\n')
-    help(msg)
 
   robot.hear regex, (msg) ->
     search(msg, msg.match[1], false)
