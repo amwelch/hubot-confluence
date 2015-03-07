@@ -3,7 +3,6 @@ chai = require 'chai'
 sinon = require 'sinon'
 nock = require 'nock'
 chai.use require 'sinon-chai'
-require 'coffee-script/register'
 
 Robot = require 'hubot/src/robot'
 TextMessage = require('hubot/src/message').TextMessage
@@ -135,11 +134,19 @@ describe 'Unit Tests', ->
   it 'test trigger search', (done) ->
     url = "/foo"
     title = "fake title"
+    res =
+      title: title
+      _links:
+        webui: url
+    bad_res =
+      title: "foo",
+      _links:
+        webui: "bar"
+    #Make sure we are only returning the first result
     body =
       results: [
-        title: title
-        _links:
-          webui: url
+        res,
+        bad_res
       ]
     base = "https://#{test_host}:#{test_port}"
     path = "/wiki/rest/api/content/search"
