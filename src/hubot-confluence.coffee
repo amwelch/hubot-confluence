@@ -25,7 +25,6 @@ search = (msg, query, text) ->
   url = make_url(suffix, true)
   headers = make_headers()
 
-  msg.send url
   msg.http(url).headers(headers).get() (e, res, body) -> 
     if e
       msg.send "Error: #{e}"
