@@ -49,7 +49,6 @@ describe 'Unit Tests', ->
     # Create new robot, without http, using mock adapter
     robot = new Robot null, "mock-adapter", false
 
-    robot.adapter.on "connected", ->
     nconf.set("HUBOT_CONFLUENCE_USER", test_user)
     nconf.set("HUBOT_CONFLUENCE_PASSWORD", test_pw)
     nconf.set("HUBOT_CONFLUENCE_HOST", test_host)
