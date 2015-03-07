@@ -1,6 +1,9 @@
 nconf = require("nconf")
 btoa = require("btoa")
 
+triggers = require './data/triggers.json'
+regex = new RegExp triggers.join('|'), 'i'
+
 cwd = process.cwd()
 DEFAULTS_FILE = "#{__dirname}/data/defaults.json"
 
@@ -20,7 +23,7 @@ search = (msg, query, text) ->
 
   query_str = encodeURIComponent("type=page and space=#{space} and #{text_search}")
   suffix = "/content/search?cql=#{query_str}"
-  url = make_url(suffix)
+  url = make_url(suffix, true)
   headers = make_headers()
 
   msg.http(url).headers(headers).get() (e, res, body) -> 
@@ -44,7 +47,7 @@ search = (msg, query, text) ->
       count += 1
       if count > num_results
         break
-      link = make_url(result._links.webui)
+      link = make_url(result._links.webui, false)
       msg.send "#{result.title} - #{link}"
     
 make_headers = ->
@@ -59,14 +62,19 @@ make_headers = ->
     Authorization: "Basic #{auth}"
 
 
-make_url = (suffix) -> 
+make_url = (suffix, api) -> 
     host = nconf.get("HUBOT_CONFLUENCE_HOST")  
     port = nconf.get("HUBOT_CONFLUENCE_PORT")  
 
-    "https://#{host}:#{port}/wiki/rest/api#{suffix}"
+    url = "https://#{host}:#{port}/wiki"
+    if api
+      url = "#{url}/rest/api#{suffix}"
+    else
+      url = "#{url}#{suffix}"
    
 help = (msg) ->
   commands = [
+    "confluence show triggers"
     "confluence help"
     "confluence search SEARCH PHRASE"
   ]
@@ -83,3 +91,10 @@ module.exports = (robot) ->
 
   robot.hear /confluence help/i, (msg) ->
     help(msg)
+
+  robot.hear /confluence show triggers/i, (msg) ->
+    msg.send triggers.join('\n')
+    help(msg)
+
+  robot.hear regex, (msg) ->
+    search(msg, msg.match[1], false)
