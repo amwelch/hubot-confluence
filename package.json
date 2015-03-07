@@ -27,7 +27,8 @@
     "chai": "*",
     "sinon-chai": "*",
     "nconf": "*",
-    "sinon": "*"
+    "sinon": "*",
+    "btoa": "*"
   },
 
   "main": "index.coffee",
