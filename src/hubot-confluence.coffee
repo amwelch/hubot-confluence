@@ -97,5 +97,4 @@ module.exports = (robot) ->
   for trigger in triggers
     regex = new RegExp trigger, 'i'
     robot.hear regex, (msg) ->
-      msg.send msg.match[1]
       search(msg, msg.match[1], false)
