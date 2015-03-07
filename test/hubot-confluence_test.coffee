@@ -33,8 +33,8 @@ describe 'Basic listeners', ->
       rgx = new RegExp trigger, 'i'
       expect(@robot.hear).to.have.been.calledWith(rgx)
 
-describe 'Unit Tests', ->     
-  robot = 
+describe 'Unit Tests', ->
+  robot =
     http: sinon.spy()
 
   chat_user = {}
@@ -95,12 +95,16 @@ describe 'Unit Tests', ->
   filter = (path) ->
     '/'
 
-#TODO: need to force an error in nock, try https://github.com/pgte/nock/issues/164
+#TODO: need to force an error in nock,
+#  try https://github.com/pgte/nock/issues/164
+#
 #  it 'test search error', (done) ->
 #
 #    err = "test error"
 #    base = "https://#{test_host}:#{test_port}"
-#    path = "/wiki/rest/api/content/search?cql=type%3Dpage%20and%20space%3Dbar%20and%20title~%22foo%22"
+#    path = "/wiki/rest/api/content/search"
+#    params = "cql=type%3Dpage%20and%20space%3Dbar%20and%20title~%22foo%22"
+#    path = "#{path}?#{params}"
 #    nconf.set("HUBOT_CONFLUENCE_TIMEOUT", 200)
 #    nock(base).get(path).delayConnection(1000).reply(200);
 #    adapter.on "send", (envelope, strings) ->
@@ -111,17 +115,20 @@ describe 'Unit Tests', ->
   it 'test basic search', (done) ->
     url = "/foo"
     title = "fake title"
-    body = 
+    body =
       results: [
         title: title
-        _links: 
-          webui: url 
+        _links:
+          webui: url
       ]
     base = "https://#{test_host}:#{test_port}"
-    path = "/wiki/rest/api/content/search?cql=type%3Dpage%20and%20space%3Dbar%20and%20title~%22foo%22"
-    nock(base).get(path).reply(200, JSON.stringify(body));
+    path = "/wiki/rest/api/content/search"
+    params = "cql=type%3Dpage%20and%20space%3Dbar%20and%20title~%22foo%22"
+    full = "#{path}?#{params}"
+    nock(base).get(full).reply(200, JSON.stringify(body))
     adapter.on "send", (envelope, strings) ->
-      expect(strings[0]).to.string "#{title} - https://#{test_host}:#{test_port}/wiki#{url}"
+      expect_str = "#{title} - https://#{test_host}:#{test_port}/wiki#{url}"
+      expect(strings[0]).to.string expect_str
       done()
 
     adapter.receive(new TextMessage chat_user, "confluence search foo")
@@ -129,19 +136,24 @@ describe 'Unit Tests', ->
   it 'test trigger search', (done) ->
     url = "/foo"
     title = "fake title"
-    body = 
+    body =
       results: [
         title: title
-        _links: 
-          webui: url 
+        _links:
+          webui: url
       ]
     base = "https://#{test_host}:#{test_port}"
-    path = "/wiki/rest/api/content/search?cql=type%3Dpage%20and%20space%3Dbar%20and%20title~%22foo%22"
-    nock(base).get(path).reply(200, JSON.stringify({}));
-    path = "/wiki/rest/api/content/search?cql=type%3Dpage%20and%20space%3Dbar%20and%20text~%22foo%22"
-    nock(base).get(path).reply(200, JSON.stringify(body));
+    path = "/wiki/rest/api/content/search"
+    params = "cql=type%3Dpage%20and%20space%3Dbar%20and%20title~%22foo%22"
+    full = "#{path}?#{params}"
+    nock(base).get(full).reply(200, JSON.stringify({}))
+    path = "/wiki/rest/api/content/search"
+    params = "cql=type%3Dpage%20and%20space%3Dbar%20and%20text~%22foo%22"
+    full = "#{path}?#{params}"
+    nock(base).get(full).reply(200, JSON.stringify(body))
     adapter.on "send", (envelope, strings) ->
-      expect(strings[0]).to.string "#{title} - https://#{test_host}:#{test_port}/wiki#{url}"
+      expect_str = "#{title} - https://#{test_host}:#{test_port}/wiki#{url}"
+      expect(strings[0]).to.string expect_str
       done()
 
     adapter.receive(new TextMessage chat_user, "how do I foo")
