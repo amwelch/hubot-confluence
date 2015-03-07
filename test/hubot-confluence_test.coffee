@@ -3,6 +3,7 @@ chai = require 'chai'
 sinon = require 'sinon'
 nock = require 'nock'
 chai.use require 'sinon-chai'
+require 'coffee-script/register'
 
 Robot = require 'hubot/src/robot'
 TextMessage = require('hubot/src/message').TextMessage
@@ -155,6 +156,26 @@ describe 'Unit Tests', ->
       done()
 
     adapter.receive(new TextMessage chat_user, "how do I foo")
+
+  it 'test trigger search no results', (done) ->
+    body =
+      results: [
+      ]
+    base = "https://#{test_host}:#{test_port}"
+    path = "/wiki/rest/api/content/search"
+    params = "cql=type%3Dpage%20and%20space%3Dbar%20and%20title~%22foo%22"
+    full = "#{path}?#{params}"
+    nock(base).get(full).reply(200, JSON.stringify({}))
+    path = "/wiki/rest/api/content/search"
+    params = "cql=type%3Dpage%20and%20space%3Dbar%20and%20text~%22foo%22"
+    full = "#{path}?#{params}"
+    nock(base).get(full).reply(200, JSON.stringify({}))
+    adapter.on "send", (envelope, strings) ->
+      expect(strings[0]).to.string "No results"
+      done()
+
+    adapter.receive(new TextMessage chat_user, "how do I foo")
+
 
 describe 'test-require', ->
   it 'requries hubot-confluence', ->
