@@ -1,5 +1,4 @@
 nconf = require "nconf"
-jasmine = require 'jasmine'
 chai = require 'chai'
 sinon = require 'sinon'
 nock = require 'nock'
