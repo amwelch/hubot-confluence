@@ -1,8 +1,8 @@
 [
   "how is the (.*)",
   "does anyone know how to (.*)",
-  "do we have directions \b(?:[^\s]+)\b on how to (.*)",
-  "are there directions \b(?:[^\s]+)\b on how to (.*)",
+  "do we have directions \b(?:[\\S]+)\b on how to (.*)",
+  "are there directions \b(?:[^\\S]+)\b on how to (.*)",
   "how this \b(.*)\b works",
   "for how to (.*)",
   "i don[']?t know how to (.*)",
