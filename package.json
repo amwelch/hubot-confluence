@@ -1,6 +1,6 @@
 {
   "name": "hubot-confluence",
-  "description": "Generate service alerts using influxdb queries",
+  "description": "Respond to chat questions with a relevant wiki article",
   "version": "0.1.0",
   "author": "Alexander Welch <amwelch3@gmail.com>",
   "license": "MIT",
@@ -19,7 +19,7 @@
   },
 
   "dependencies": {
-    "coffee-script": "~1.6"
+    "coffee-script": "*"
   },
 
   "devDependencies": {
