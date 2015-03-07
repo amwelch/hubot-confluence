@@ -27,12 +27,14 @@
   "devDependencies": {
     "mocha": "*",
     "chai": "*",
-    "jasmine": "*",
+    "coveralls": "*",
+    "mocha-lcov-reporter": "*",
     "hubot": "*",
+    "coffee-coverage": "*",
     "hubot-mock-adapter": "*",
     "sinon-chai": "*",
     "nock": "*",
-    "sinon": "*",
+    "sinon": "*"
   },
 
   "main": "index.coffee",

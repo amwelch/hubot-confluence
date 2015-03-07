@@ -3,4 +3,11 @@
 # bootstrap environment
 source script/bootstrap
 
-mocha --compilers coffee:coffee-script  
+#mocha --compilers coffee:coffee-script 
+rm -rf coverage
+mkdir coverage
+
+#COVERAGE=true mocha --require coffee-coverage/register --reporter json-cov --compilers coffee:coffee-script > coverage/coverage.html
+COVERAGE=true mocha --require coffee-coverage/register -R mocha-lcov-reporter --compilers coffee:coffee-script > coverage/coverage.lcov
+cat coverage/coverage.lcov | node_modules/coveralls/bin/coveralls.js
+
