@@ -2,7 +2,6 @@ nconf = require("nconf")
 btoa = require("btoa")
 
 triggers = require './data/triggers.json'
-regex = new RegExp triggers.join('|'), 'i'
 
 cwd = process.cwd()
 DEFAULTS_FILE = "#{__dirname}/data/defaults.json"
@@ -26,6 +25,7 @@ search = (msg, query, text) ->
   url = make_url(suffix, true)
   headers = make_headers()
 
+  msg.send url
   msg.http(url).headers(headers).get() (e, res, body) -> 
     if e
       msg.send "Error: #{e}"
@@ -95,5 +95,8 @@ module.exports = (robot) ->
   robot.hear /confluence show triggers/i, (msg) ->
     msg.send triggers.join('\n')
 
-  robot.hear regex, (msg) ->
-    search(msg, msg.match[1], false)
+  for trigger in triggers
+    regex = new RegExp trigger, 'i'
+    robot.hear regex, (msg) ->
+      msg.send msg.match[1]
+      search(msg, msg.match[1], false)
