@@ -8,21 +8,37 @@ nconf.argv()
     .env()
     .file('defaults', DEFAULTS_FILE)
 
-search = (msg, query) ->
+search = (msg, query, text) ->
+
 
   num_results = nconf.get("HUBOT_CONFLUENCE_NUM_RESULTS") or 1
   space = nconf.get("HUBOT_CONFLUENCE_SEARCH_SPACE")
-  suffix = "content/search?cql=type=page&space=#{space}&query=#{query}"
+  if text
+    text_search = "text~\"#{query}\""
+  else
+    text_search = "title~\"#{query}\""
+
+  query_str = encodeURIComponent("type=page and space=#{space} and #{text_search}")
+  suffix = "/content/search?cql=#{query_str}"
   url = make_url(suffix)
   headers = make_headers()
 
-  msg.http(url).headers(headers).get() (e, res, body) ->
+  msg.http(url).headers(headers).get() (e, res, body) -> 
     if e
       msg.send "Error: #{e}"
       return
 
     content = JSON.parse(body)
     
+    if !content.results or content.results.length == 0
+      #Fall back to text search
+      if !text
+        search(msg, query, true)
+        return
+      else
+        msg.send "No results found"
+        return
+
     count = 0
     for result in content.results
       count += 1
@@ -30,7 +46,7 @@ search = (msg, query) ->
         break
       link = make_url(result._links.webui)
       msg.send "#{result.title} - #{link}"
-
+    
 make_headers = ->
 
   user = nconf.get("HUBOT_CONFLUENCE_USER")
@@ -47,7 +63,7 @@ make_url = (suffix) ->
     host = nconf.get("HUBOT_CONFLUENCE_HOST")  
     port = nconf.get("HUBOT_CONFLUENCE_PORT")  
 
-    "https://#{host}:#{port}/wiki/rest/api/#{suffix}"
+    "https://#{host}:#{port}/wiki/rest/api#{suffix}"
    
 help = (msg) ->
   commands = [
@@ -59,11 +75,11 @@ help = (msg) ->
     buf += "#{command}\n"
 
   msg.send buf
+
 module.exports = (robot) ->
 
   robot.hear /confluence search (.*)/i, (msg) ->
-    msg.send msg.match[1]
-    search(msg, msg.match[1])
+    search(msg, msg.match[1], false)
 
   robot.hear /confluence help/i, (msg) ->
     help(msg)
