@@ -20,7 +20,7 @@
 
   "dependencies": {
     "nconf": "*",
-    "coffee-script": "*",
+    "coffee-script": "~1.6",
     "btoa": "*"
   },
 
