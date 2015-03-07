@@ -25,8 +25,12 @@
   "devDependencies": {
     "mocha": "*",
     "chai": "*",
+    "jasmine": "*",
+    "hubot": "*",
+    "hubot-mock-adapter": "*",
     "sinon-chai": "*",
     "nconf": "*",
+    "nock": "*",
     "sinon": "*",
     "btoa": "*"
   },

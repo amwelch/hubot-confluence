@@ -14,24 +14,26 @@ search = (msg, query, text) ->
 
 
   num_results = nconf.get("HUBOT_CONFLUENCE_NUM_RESULTS") or 1
+  timeout = nconf.get("HUBOT_CONFLUENCE_TIMEOUT") or 2000
   space = nconf.get("HUBOT_CONFLUENCE_SEARCH_SPACE")
   if text
     text_search = "text~\"#{query}\""
   else
     text_search = "title~\"#{query}\""
 
-  query_str = encodeURIComponent("type=page and space=#{space} and #{text_search}")
+  query_str = "type=page and space=#{space} and #{text_search}"
+  query_str =  encodeURIComponent query_str
   suffix = "/content/search?cql=#{query_str}"
   url = make_url(suffix, true)
   headers = make_headers()
 
-  msg.http(url).headers(headers).get() (e, res, body) -> 
+  msg.http(url, {timeout: timeout}).headers(headers).get() (e, res, body) ->
     if e
       msg.send "Error: #{e}"
       return
-
-    content = JSON.parse(body)
     
+    content = JSON.parse(body)
+
     if !content.results or content.results.length == 0
       #Fall back to text search
       if !text
@@ -56,21 +58,21 @@ make_headers = ->
 
   auth = btoa("#{user}:#{password}")
 
-  ret = 
+  ret =
     Accept: "application/json"
     Authorization: "Basic #{auth}"
 
 
-make_url = (suffix, api) -> 
-    host = nconf.get("HUBOT_CONFLUENCE_HOST")  
-    port = nconf.get("HUBOT_CONFLUENCE_PORT")  
+make_url = (suffix, api) ->
+  host = nconf.get("HUBOT_CONFLUENCE_HOST")
+  port = nconf.get("HUBOT_CONFLUENCE_PORT")
 
-    url = "https://#{host}:#{port}/wiki"
-    if api
-      url = "#{url}/rest/api#{suffix}"
-    else
-      url = "#{url}#{suffix}"
-   
+  url = "https://#{host}:#{port}/wiki"
+  if api
+    url = "#{url}/rest/api#{suffix}"
+  else
+    url = "#{url}#{suffix}"
+  
 help = (msg) ->
   commands = [
     "confluence show triggers"
