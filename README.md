@@ -7,14 +7,33 @@ Access your organization's confluence from hubot
 
 #Installation
 
-npm install hubot-confluence
+npm install hubot-confluence --save
+
+Then add hubot-confluence to your external-scripts.json
+
+["hubot-confluence"]
+
 
 #Configuration
+
+hubot-confluence will require read access to your organization's confluence
+
+Required:
+HUBOT_CONFLUENCE_USER
+HUBOT_CONFLUENCE_PASSWORD
+HUBOT_CONFLUENCE_HOST
+HUBOT_CONFLUENCE_PORT
+HUBOT_CONFLUENCE_SEARCH_SPACE = The space in confluence to search
+
+HUBOT_CONFLUENCE_NUM_RESULTS = The number of results to return. Defaults to 1.
+HUBOT_CONFLUENCE_TIMEOUT = Timeout in ms for requests to confluence.
 
 #Commands
 
 #Author
 
+Alexander Welch <amwelch3@gmail.com>
+
 #License
 
-#TODO
+MIT
