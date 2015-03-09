@@ -27,11 +27,11 @@ _Required_:
 	HUBOT_CONFLUENCE_USER			#Atlassian User
 	HUBOT_CONFLUENCE_PASSWORD		#Atlassian Password
 	HUBOT_CONFLUENCE_HOST		
-	HUBOT_CONFLUENCE_PORT
 	HUBOT_CONFLUENCE_SEARCH_SPACE 	#The confluence space to search
     
 _Optional_:
 
+	HUBOT_CONFLUENCE_PORT			#Defaults to 443
 	HUBOT_CONFLUENCE_NUM_RESULTS  	#The number of results to return. Defaults to 1.
 	HUBOT_CONFLUENCE_TIMEOUT  		#Timeout in ms for requests to confluence. Default is no timeout
 
