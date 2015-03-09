@@ -42,7 +42,7 @@ describe 'Unit Tests', ->
   test_user = "foo"
   test_pw   = "bar"
   test_host = "baz.com"
-  test_port = 0
+  test_port = 80
 
   beforeEach (done) ->
     # Create new robot, without http, using mock adapter
@@ -72,6 +72,20 @@ describe 'Unit Tests', ->
 
   afterEach ->
     robot.shutdown()
+
+  it 'test arg sanity check search', (done) ->
+    nconf.set("HUBOT_CONFLUENCE_HOST", null)
+    adapter.on "send", (envelope, strings) ->
+      expect(strings[0]).to.string "is not properly configured"
+      done()
+    adapter.receive(new TextMessage chat_user, "how do I foo")
+
+  it 'test arg sanity check search', (done) ->
+    nconf.set("HUBOT_CONFLUENCE_HOST", null)
+    adapter.on "send", (envelope, strings) ->
+      expect(strings[0]).to.string "is not properly configured"
+      done()
+    adapter.receive(new TextMessage chat_user, "confluence search foo")
 
   it 'test help text', (done) ->
 
