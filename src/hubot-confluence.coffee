@@ -10,6 +10,23 @@ nconf.argv()
     .env()
     .file('defaults', DEFAULTS_FILE)
 
+sanity_check_args = (msg) ->
+  required_args = [
+    "HUBOT_CONFLUENCE_USER"
+    "HUBOT_CONFLUENCE_PASSWORD"
+    "HUBOT_CONFLUENCE_HOST"
+    "HUBOT_CONFLUENCE_PORT"
+    "HUBOT_CONFLUENCE_SEARCH_SPACE"
+  ]
+ 
+  for arg in required_args
+    if !nconf.get(arg)
+      buf = "#hubot-confluence is not properly configured. #{arg} is not set."
+      msg.send buf
+      return false
+
+  return true
+
 search = (msg, query, text) ->
 
 
@@ -88,6 +105,8 @@ help = (msg) ->
 module.exports = (robot) ->
 
   robot.hear /confluence search (.*)/i, (msg) ->
+    if !sanity_check_args(msg)
+      return
     search(msg, msg.match[1], false)
 
   robot.hear /confluence help/i, (msg) ->
@@ -99,4 +118,6 @@ module.exports = (robot) ->
   for trigger in triggers
     regex = new RegExp trigger, 'i'
     robot.hear regex, (msg) ->
+      if !sanity_check_args(msg)
+        return
       search(msg, msg.match[1], false)
