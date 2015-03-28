@@ -5,7 +5,19 @@ Automatically respond to questions in chat with a relevant confluence article.
 
 ##Features
 
-INSERT SAMPLE IMAGES
+Searchs confluence for pages matching search terms extracted via regex
+
+##Extending
+
+Regexs are in src/data/triggers.json.
+
+The capture group is the search phrase used.
+
+For example: 
+
+"how do I configure hubot"
+
+Would search your organization's confluence for an article on configuring hubot
 
 ##Installation
 
