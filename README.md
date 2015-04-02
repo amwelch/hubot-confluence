@@ -5,7 +5,7 @@ Automatically respond to questions in chat with a relevant confluence article.
 
 ##Features
 
-Searchs confluence for pages matching search terms extracted via regex
+Searches confluence for pages matching search terms extracted via regex
 
 ##Extending
 
