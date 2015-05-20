@@ -13,7 +13,7 @@ Regexs are in src/data/triggers.json.
 
 The capture group is the search phrase used.
 
-For example: 
+For example:
 
 "how do I configure hubot"
 
@@ -38,9 +38,9 @@ _Required_:
 
 	HUBOT_CONFLUENCE_USER			#Atlassian User
 	HUBOT_CONFLUENCE_PASSWORD		#Atlassian Password
-	HUBOT_CONFLUENCE_HOST		
-	HUBOT_CONFLUENCE_SEARCH_SPACE 	#The confluence space to search
-    
+	HUBOT_CONFLUENCE_HOST
+	HUBOT_CONFLUENCE_SEARCH_SPACE 	#Comma-separated list of Confluence Spaces to search, eg DEV,MARKETING,SALES
+
 _Optional_:
 
 	HUBOT_CONFLUENCE_PORT			#Defaults to 443
