@@ -22,7 +22,7 @@ sanity_check_args = (msg) ->
   for arg in required_args
     if !nconf.get(arg)
       buf = "#hubot-confluence is not properly configured. #{arg} is not set."
-      msg.send buf
+      msg.reply buf
       return false
 
   return true
@@ -47,7 +47,7 @@ search = (msg, query, text) ->
 
   msg.http(url, {timeout: timeout}).headers(headers).get() (e, res, body) ->
     if e
-      msg.send "Error: #{e}"
+      msg.reply "Error: #{e}"
       return
 
     content = JSON.parse(body)
@@ -58,7 +58,7 @@ search = (msg, query, text) ->
         search(msg, query, true)
         return
       else
-        msg.send "No results found"
+        msg.reply "No results found"
         return
 
     count = 0
@@ -67,7 +67,7 @@ search = (msg, query, text) ->
       if count > num_results
         break
       link = make_url(result._links.webui, false)
-      msg.send "#{result.title} - #{link}"
+      msg.reply "#{result.title} - #{link}"
 
 make_headers = ->
 
@@ -103,7 +103,7 @@ help = (msg) ->
   for command in commands
     buf += "#{command}\n"
 
-  msg.send buf
+  msg.reply buf
 
 module.exports = (robot) ->
 
@@ -116,7 +116,7 @@ module.exports = (robot) ->
     help(msg)
 
   robot.hear /confluence show triggers/i, (msg) ->
-    msg.send triggers.join('\n')
+    msg.reply triggers.join('\n')
 
   for trigger in triggers
     regex = new RegExp trigger, 'i'
