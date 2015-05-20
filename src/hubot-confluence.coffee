@@ -81,7 +81,7 @@ make_headers = ->
     Authorization: "Basic #{auth}"
 
 clean_search = (query) ->
-  query = query.replace('?', '')
+  query = query.replace(/[!?,.]/g, ' ')
 
 make_url = (suffix, api) ->
   host = nconf.get("HUBOT_CONFLUENCE_HOST")
