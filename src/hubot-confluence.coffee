@@ -18,7 +18,7 @@ sanity_check_args = (msg) ->
     "HUBOT_CONFLUENCE_PORT"
     "HUBOT_CONFLUENCE_SEARCH_SPACE"
   ]
- 
+
   for arg in required_args
     if !nconf.get(arg)
       buf = "#hubot-confluence is not properly configured. #{arg} is not set."
@@ -29,7 +29,6 @@ sanity_check_args = (msg) ->
 
 search = (msg, query, text) ->
 
-
   num_results = nconf.get("HUBOT_CONFLUENCE_NUM_RESULTS") or 1
   timeout = nconf.get("HUBOT_CONFLUENCE_TIMEOUT") or 2000
   space = nconf.get("HUBOT_CONFLUENCE_SEARCH_SPACE")
@@ -38,7 +37,7 @@ search = (msg, query, text) ->
   else
     text_search = "title~\"#{query}\""
 
-  query_str = "type=page and space=#{space} and #{text_search}"
+  query_str = "type=page and space in(#{space}) and #{text_search}"
   query_str =  encodeURIComponent query_str
   suffix = "/content/search?cql=#{query_str}"
   url = make_url(suffix, true)
@@ -48,7 +47,7 @@ search = (msg, query, text) ->
     if e
       msg.send "Error: #{e}"
       return
-    
+
     content = JSON.parse(body)
 
     if !content.results or content.results.length == 0
@@ -67,7 +66,7 @@ search = (msg, query, text) ->
         break
       link = make_url(result._links.webui, false)
       msg.send "#{result.title} - #{link}"
-    
+
 make_headers = ->
 
   user = nconf.get("HUBOT_CONFLUENCE_USER")
@@ -89,7 +88,7 @@ make_url = (suffix, api) ->
     url = "#{url}/rest/api#{suffix}"
   else
     url = "#{url}#{suffix}"
-  
+
 help = (msg) ->
   commands = [
     "confluence show triggers"
