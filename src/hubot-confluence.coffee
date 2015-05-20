@@ -29,6 +29,8 @@ sanity_check_args = (msg) ->
 
 search = (msg, query, text) ->
 
+  query = clean_search(query)
+
   num_results = nconf.get("HUBOT_CONFLUENCE_NUM_RESULTS") or 1
   timeout = nconf.get("HUBOT_CONFLUENCE_TIMEOUT") or 2000
   space = nconf.get("HUBOT_CONFLUENCE_SEARCH_SPACE")
@@ -78,6 +80,8 @@ make_headers = ->
     Accept: "application/json"
     Authorization: "Basic #{auth}"
 
+clean_search = (query) ->
+  query = query.replace('?', '')
 
 make_url = (suffix, api) ->
   host = nconf.get("HUBOT_CONFLUENCE_HOST")
