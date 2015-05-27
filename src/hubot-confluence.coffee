@@ -10,6 +10,10 @@ nconf.argv()
     .env()
     .file('defaults', DEFAULTS_FILE)
 
+noResultsFound = [
+  'I have no idea'
+]
+
 sanity_check_args = (msg) ->
   required_args = [
     "HUBOT_CONFLUENCE_USER"
@@ -58,7 +62,8 @@ search = (msg, query, text) ->
         search(msg, query, true)
         return
       else
-        msg.reply "No results found"
+        #msg.reply "No results found"
+        msg.reply msg.random noResultsFound
         return
 
     count = 0
