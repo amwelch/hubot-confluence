@@ -135,7 +135,7 @@ describe 'Unit Tests', ->
       ]
     base = "https://#{test_host}:#{test_port}"
     path = "/wiki/rest/api/content/search"
-    params = "cql=type%3Dpage%20and%20space%3Dbar%20and%20title~%22foo%22"
+    params = "os_authType=basic&cql=type%3Dpage%20and%20space%3Dbar%20and%20title~%22foo%22"
     full = "#{path}?#{params}"
     nock(base).get(full).reply(200, JSON.stringify(body))
     adapter.on "send", (envelope, strings) ->
@@ -164,11 +164,11 @@ describe 'Unit Tests', ->
       ]
     base = "https://#{test_host}:#{test_port}"
     path = "/wiki/rest/api/content/search"
-    params = "cql=type%3Dpage%20and%20space%3Dbar%20and%20title~%22foo%22"
+    params = "os_authType=basic&cql=type%3Dpage%20and%20space%3Dbar%20and%20title~%22foo%22"
     full = "#{path}?#{params}"
     nock(base).get(full).reply(200, JSON.stringify({}))
     path = "/wiki/rest/api/content/search"
-    params = "cql=type%3Dpage%20and%20space%3Dbar%20and%20text~%22foo%22"
+    params = "os_authType=basic&cql=type%3Dpage%20and%20space%3Dbar%20and%20text~%22foo%22"
     full = "#{path}?#{params}"
     nock(base).get(full).reply(200, JSON.stringify(body))
     adapter.on "send", (envelope, strings) ->
@@ -184,11 +184,11 @@ describe 'Unit Tests', ->
       ]
     base = "https://#{test_host}:#{test_port}"
     path = "/wiki/rest/api/content/search"
-    params = "cql=type%3Dpage%20and%20space%3Dbar%20and%20title~%22foo%22"
+    params = "os_authType=basic&cql=type%3Dpage%20and%20space%3Dbar%20and%20title~%22foo%22"
     full = "#{path}?#{params}"
     nock(base).get(full).reply(200, JSON.stringify({}))
     path = "/wiki/rest/api/content/search"
-    params = "cql=type%3Dpage%20and%20space%3Dbar%20and%20text~%22foo%22"
+    params = "os_authType=basic&cql=type%3Dpage%20and%20space%3Dbar%20and%20text~%22foo%22"
     full = "#{path}?#{params}"
     nock(base).get(full).reply(200, JSON.stringify({}))
     adapter.on "send", (envelope, strings) ->

@@ -45,7 +45,7 @@ search = (msg, query, text) ->
 
   query_str = "type=page and space in(#{space}) and #{text_search}"
   query_str =  encodeURIComponent query_str
-  suffix = "/content/search?cql=#{query_str}"
+  suffix = "/content/search?os_authType=basic&cql=#{query_str}"
   url = make_url(suffix, true)
   headers = make_headers()
 
@@ -53,7 +53,16 @@ search = (msg, query, text) ->
     if e
       msg.reply "Error: #{e}"
       return
+   
+    if res.statusCode isnt 200
+      msg.send "Error processing your request"
+      msg.send "Check hubot logs for more information"
+      console.log("Status Code: " + res.statusCode)
+      console.log("Response body:")
+      console.log(body)
+      return
 
+ 
     content = JSON.parse(body)
 
     if !content.results or content.results.length == 0

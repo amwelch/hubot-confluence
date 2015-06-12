@@ -1,29 +1,24 @@
 {
   "name": "hubot-confluence",
   "description": "Respond to chat questions with a relevant wiki article",
-  "version": "0.1.1",
+  "version": "0.2.1",
   "author": "Alexander Welch <amwelch3@gmail.com>",
   "license": "MIT",
-
   "keywords": [
     "hubot-confluence"
   ],
-
   "repository": {
     "type": "git",
     "url": "git://github.com/amwelch-oss/hubot-confluence"
   },
-
   "bugs": {
     "url": "git://github.com/amwelch-oss/hubot-confluence/issues"
   },
-
   "dependencies": {
     "nconf": "0.7.1",
     "coffee-script": "1.6.3",
     "btoa": "1.1.2"
   },
-
   "devDependencies": {
     "mocha": "2.2.0",
     "chai": "2.1.1",
@@ -36,9 +31,7 @@
     "nock": "1.1.0",
     "sinon": "1.13.0"
   },
-
   "main": "index.coffee",
-
   "scripts": {
     "test": "script/test"
   }
