@@ -50,12 +50,12 @@ search = (msg, query, text) ->
       return
    
     if res.statusCode isnt 200
-        msg.send "Error processing your request"
-        msg.send "Check hubot logs for more information"
-        console.log("Status Code: " + res.statusCode)
-        console.log("Response body:")
-        console.log(body)
-        return
+      msg.send "Error processing your request"
+      msg.send "Check hubot logs for more information"
+      console.log("Status Code: " + res.statusCode)
+      console.log("Response body:")
+      console.log(body)
+      return
 
  
     content = JSON.parse(body)
