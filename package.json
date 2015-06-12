@@ -1,7 +1,7 @@
 {
   "name": "hubot-confluence",
   "description": "Respond to chat questions with a relevant wiki article",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "author": "Alexander Welch <amwelch3@gmail.com>",
   "license": "MIT",
   "keywords": [
