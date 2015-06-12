@@ -10,6 +10,10 @@ nconf.argv()
     .env()
     .file('defaults', DEFAULTS_FILE)
 
+noResultsFound = [
+  'I have no idea'
+]
+
 sanity_check_args = (msg) ->
   required_args = [
     "HUBOT_CONFLUENCE_USER"
@@ -18,17 +22,18 @@ sanity_check_args = (msg) ->
     "HUBOT_CONFLUENCE_PORT"
     "HUBOT_CONFLUENCE_SEARCH_SPACE"
   ]
- 
+
   for arg in required_args
     if !nconf.get(arg)
       buf = "#hubot-confluence is not properly configured. #{arg} is not set."
-      msg.send buf
+      msg.reply buf
       return false
 
   return true
 
 search = (msg, query, text) ->
 
+  query = clean_search(query)
 
   num_results = nconf.get("HUBOT_CONFLUENCE_NUM_RESULTS") or 1
   timeout = nconf.get("HUBOT_CONFLUENCE_TIMEOUT") or 2000
@@ -38,7 +43,7 @@ search = (msg, query, text) ->
   else
     text_search = "title~\"#{query}\""
 
-  query_str = "type=page and space=#{space} and #{text_search}"
+  query_str = "type=page and space in(#{space}) and #{text_search}"
   query_str =  encodeURIComponent query_str
   suffix = "/content/search?os_authType=basic&cql=#{query_str}"
   url = make_url(suffix, true)
@@ -46,7 +51,7 @@ search = (msg, query, text) ->
 
   msg.http(url, {timeout: timeout}).headers(headers).get() (e, res, body) ->
     if e
-      msg.send "Error: #{e}"
+      msg.reply "Error: #{e}"
       return
    
     if res.statusCode isnt 200
@@ -66,7 +71,8 @@ search = (msg, query, text) ->
         search(msg, query, true)
         return
       else
-        msg.send "No results found"
+        #msg.reply "No results found"
+        msg.reply msg.random noResultsFound
         return
 
     count = 0
@@ -75,8 +81,8 @@ search = (msg, query, text) ->
       if count > num_results
         break
       link = make_url(result._links.webui, false)
-      msg.send "#{result.title} - #{link}"
-    
+      msg.reply "#{result.title} - #{link}"
+
 make_headers = ->
 
   user = nconf.get("HUBOT_CONFLUENCE_USER")
@@ -88,6 +94,8 @@ make_headers = ->
     Accept: "application/json"
     Authorization: "Basic #{auth}"
 
+clean_search = (query) ->
+  query = query.replace(/[!?,.]/g, ' ')
 
 make_url = (suffix, api) ->
   host = nconf.get("HUBOT_CONFLUENCE_HOST")
@@ -98,7 +106,7 @@ make_url = (suffix, api) ->
     url = "#{url}/rest/api#{suffix}"
   else
     url = "#{url}#{suffix}"
-  
+
 help = (msg) ->
   commands = [
     "confluence show triggers"
@@ -109,7 +117,7 @@ help = (msg) ->
   for command in commands
     buf += "#{command}\n"
 
-  msg.send buf
+  msg.reply buf
 
 module.exports = (robot) ->
 
@@ -122,7 +130,7 @@ module.exports = (robot) ->
     help(msg)
 
   robot.hear /confluence show triggers/i, (msg) ->
-    msg.send triggers.join('\n')
+    msg.reply triggers.join('\n')
 
   for trigger in triggers
     regex = new RegExp trigger, 'i'
