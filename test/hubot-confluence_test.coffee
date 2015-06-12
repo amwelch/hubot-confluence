@@ -75,28 +75,28 @@ describe 'Unit Tests', ->
 
   it 'test arg sanity check search', (done) ->
     nconf.set("HUBOT_CONFLUENCE_HOST", null)
-    adapter.on "send", (envelope, strings) ->
+    adapter.on "reply", (envelope, strings) ->
       expect(strings[0]).to.string "is not properly configured"
       done()
     adapter.receive(new TextMessage chat_user, "how do I foo")
 
   it 'test arg sanity check search', (done) ->
     nconf.set("HUBOT_CONFLUENCE_HOST", null)
-    adapter.on "send", (envelope, strings) ->
+    adapter.on "reply", (envelope, strings) ->
       expect(strings[0]).to.string "is not properly configured"
       done()
     adapter.receive(new TextMessage chat_user, "confluence search foo")
 
   it 'test help text', (done) ->
 
-    adapter.on "send", (envelope, strings) ->
+    adapter.on "reply", (envelope, strings) ->
       expect(strings[0]).to.string "confluence help"
       done()
 
     adapter.receive(new TextMessage chat_user, "confluence help")
 
   it 'test triggers', (done) ->
-    adapter.on "send", (envelope, strings) ->
+    adapter.on "reply", (envelope, strings) ->
       triggers = require("../src/data/triggers.json")
       for trigger in triggers
         expect(strings[0]).to.string trigger
@@ -115,7 +115,7 @@ describe 'Unit Tests', ->
 #    err = "test error"
 #    base = "https://#{test_host}:#{test_port}"
 #    path = "/wiki/rest/api/content/search"
-#    params = "cql=type%3Dpage%20and%20space%3Dbar%20and%20title~%22foo%22"
+#    params = "cql=type%3Dpage%20and%20space%20in%20%20and%20title~%22foo%22"
 #    path = "#{path}?#{params}"
 #    nconf.set("HUBOT_CONFLUENCE_TIMEOUT", 200)
 #    nock(base).get(path).delayConnection(1000).reply(200);
@@ -135,10 +135,10 @@ describe 'Unit Tests', ->
       ]
     base = "https://#{test_host}:#{test_port}"
     path = "/wiki/rest/api/content/search"
-    params = "os_authType=basic&cql=type%3Dpage%20and%20space%3Dbar%20and%20title~%22foo%22"
+    params = "os_authType=basic&cql=type%3Dpage%20and%20space%20in(bar)%20and%20title~%22foo%22"
     full = "#{path}?#{params}"
     nock(base).get(full).reply(200, JSON.stringify(body))
-    adapter.on "send", (envelope, strings) ->
+    adapter.on "reply", (envelope, strings) ->
       expect_str = "#{title} - https://#{test_host}:#{test_port}/wiki#{url}"
       expect(strings[0]).to.string expect_str
       done()
@@ -164,14 +164,14 @@ describe 'Unit Tests', ->
       ]
     base = "https://#{test_host}:#{test_port}"
     path = "/wiki/rest/api/content/search"
-    params = "os_authType=basic&cql=type%3Dpage%20and%20space%3Dbar%20and%20title~%22foo%22"
+    params = "os_authType=basic&cql=type%3Dpage%20and%20space%20in(bar)%20and%20title~%22foo%22"
     full = "#{path}?#{params}"
     nock(base).get(full).reply(200, JSON.stringify({}))
     path = "/wiki/rest/api/content/search"
-    params = "os_authType=basic&cql=type%3Dpage%20and%20space%3Dbar%20and%20text~%22foo%22"
+    params = "os_authType=basic&cql=type%3Dpage%20and%20space%20in(bar)%20and%20text~%22foo%22"
     full = "#{path}?#{params}"
     nock(base).get(full).reply(200, JSON.stringify(body))
-    adapter.on "send", (envelope, strings) ->
+    adapter.on "reply", (envelope, strings) ->
       expect_str = "#{title} - https://#{test_host}:#{test_port}/wiki#{url}"
       expect(strings[0]).to.string expect_str
       done()
@@ -184,15 +184,15 @@ describe 'Unit Tests', ->
       ]
     base = "https://#{test_host}:#{test_port}"
     path = "/wiki/rest/api/content/search"
-    params = "os_authType=basic&cql=type%3Dpage%20and%20space%3Dbar%20and%20title~%22foo%22"
+    params = "os_authType=basic&cql=type%3Dpage%20and%20space%20in(bar)%20and%20title~%22foo%22"
     full = "#{path}?#{params}"
     nock(base).get(full).reply(200, JSON.stringify({}))
     path = "/wiki/rest/api/content/search"
-    params = "os_authType=basic&cql=type%3Dpage%20and%20space%3Dbar%20and%20text~%22foo%22"
+    params = "os_authType=basic&cql=type%3Dpage%20and%20space%20in(bar)%20and%20text~%22foo%22"
     full = "#{path}?#{params}"
-    nock(base).get(full).reply(200, JSON.stringify({}))
-    adapter.on "send", (envelope, strings) ->
-      expect(strings[0]).to.string "No results"
+    nock(base).get(full).reply(200, JSON.stringify(body))
+    adapter.on "reply", (envelope, strings) ->
+      expect(strings[0]).to.string "I have no idea"
       done()
 
     adapter.receive(new TextMessage chat_user, "how do I foo")
