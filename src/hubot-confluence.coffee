@@ -48,7 +48,6 @@ search = (msg, query, text) ->
   suffix = "/content/search?os_authType=basic&cql=#{query_str}"
   url = make_url(suffix, true)
   headers = make_headers()
-
   msg.http(url, {timeout: timeout}).headers(headers).get() (e, res, body) ->
     if e
       msg.reply "Error: #{e}"
@@ -71,7 +70,6 @@ search = (msg, query, text) ->
         search(msg, query, true)
         return
       else
-        #msg.reply "No results found"
         msg.reply msg.random noResultsFound
         return
 
