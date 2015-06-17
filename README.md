@@ -46,6 +46,7 @@ _Optional_:
 	HUBOT_CONFLUENCE_PORT			#Defaults to 443
 	HUBOT_CONFLUENCE_NUM_RESULTS  	#The number of results to return. Defaults to 1.
 	HUBOT_CONFLUENCE_TIMEOUT  		#Timeout in ms for requests to confluence. Default is no timeout
+  HUBOT_CONFLUENCE_PROTOCOL     #Configure the protocol to use to connect to confluence (default: https, common use cases: http, https)
 
 ##Commands
 
