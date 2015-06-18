@@ -98,8 +98,9 @@ clean_search = (query) ->
 make_url = (suffix, api) ->
   host = nconf.get("HUBOT_CONFLUENCE_HOST")
   port = nconf.get("HUBOT_CONFLUENCE_PORT")
+  protocol = nconf.get("HUBOT_CONFLUENCE_PROTOCOL")
 
-  url = "https://#{host}:#{port}/wiki"
+  url = "#{protocol}://#{host}:#{port}/wiki"
   if api
     url = "#{url}/rest/api#{suffix}"
   else
