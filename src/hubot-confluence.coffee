@@ -107,7 +107,7 @@ search = (msg, query, text) ->
         break
       link = ""
       if rest_prototype
-        link = "http://wiki.fdbops.com/pages/viewpage.action?pageId=#{result.id}"
+        link = make_url(result.wikiLink, false)
       else
         link = make_url(result._links.webui, false)
       msg.reply "#{result.title} - #{link}"
@@ -142,7 +142,15 @@ make_url = (suffix, api) ->
     else
       url = "#{url}/rest/api#{suffix}"
   else
-    url = "#{url}#{suffix}"
+    if rest_prototype
+      debugger
+      suffix = suffix.replace /\[/, ""
+      suffix = suffix.replace /\]/, ""
+      suffix = suffix.replace /:/, "/"
+      suffix = suffix.replace /\s/g, "%20"
+      url = "#{url}/display/#{suffix}"
+    else
+      url = "#{url}#{suffix}"
 
 help = (msg) ->
   commands = [
