@@ -1,3 +1,27 @@
+# Description:
+#   Automatically respond to questions in chat with a relevant confluence article.
+#
+# Configuration:
+#  HUBOT_CONFLUENCE_USER           Required Atlassian User
+#  HUBOT_CONFLUENCE_PASSWORD       Required Atlassian Password
+#  HUBOT_CONFLUENCE_HOST           Required
+#  HUBOT_CONFLUENCE_SEARCH_SPACE   Required Comma-separated list of Confluence Spaces to search, eg DEV,MARKETING,SALES
+#  HUBOT_CONFLUENCE_PORT           Optional Defaults to 443
+#  HUBOT_CONFLUENCE_NUM_RESULTS    Optional The number of results to return. Defaults to 1.
+#  HUBOT_CONFLUENCE_TIMEOUT        Optional Timeout in ms for requests to confluence. Default is no timeout
+#  HUBOT_CONFLUENCE_PROTOCOL       Optional Configure the protocol to use to connect to confluence (default: https, common use cases: http, https)
+#  HUBOT_CONFLUENCE_NO_CONTEXT_ROOT Optional If the deployment is to wiki.example.com instead of example.com/wiki set this to 'true'
+#  HUBOT_CONFLUENCE_REST_PROTOTYPE  Optional If connecting to a pre-5.5 deployment of confluence
+#
+# Commands:
+#   confluence show triggers - Show the current trigger regexs
+#   confluence search <text> - Run a text search against the phrase 'text'
+#
+# Authors:
+#   amwelch
+#   chrisatomix
+#
+
 nconf = require("nconf")
 btoa = require("btoa")
 
@@ -32,7 +56,7 @@ sanity_check_args = (msg) ->
   return true
 
 search = (msg, query, text) ->
-
+  rest_prototype = nconf.get("HUBOT_CONFLUENCE_REST_PROTOTYPE")
   query = clean_search(query)
 
   num_results = nconf.get("HUBOT_CONFLUENCE_NUM_RESULTS") or 1
@@ -46,6 +70,8 @@ search = (msg, query, text) ->
   query_str = "type=page and space in(#{space}) and #{text_search}"
   query_str =  encodeURIComponent query_str
   suffix = "/content/search?os_authType=basic&cql=#{query_str}"
+  if rest_prototype
+    suffix = "/search/site?type=page&query=#{query}"
   url = make_url(suffix, true)
   headers = make_headers()
   msg.http(url, {timeout: timeout}).headers(headers).get() (e, res, body) ->
@@ -61,10 +87,11 @@ search = (msg, query, text) ->
       console.log(body)
       return
 
- 
     content = JSON.parse(body)
-
-    if !content.results or content.results.length == 0
+    results = content.results
+    if rest_prototype
+      results = content.result
+    if !results or results.length == 0
       #Fall back to text search
       if !text
         search(msg, query, true)
@@ -74,11 +101,15 @@ search = (msg, query, text) ->
         return
 
     count = 0
-    for result in content.results
+    for result in results
       count += 1
       if count > num_results
         break
-      link = make_url(result._links.webui, false)
+      link = ""
+      if rest_prototype
+        link = make_url(result.wikiLink, false)
+      else
+        link = make_url(result._links.webui, false)
       msg.reply "#{result.title} - #{link}"
 
 make_headers = ->
@@ -99,12 +130,26 @@ make_url = (suffix, api) ->
   host = nconf.get("HUBOT_CONFLUENCE_HOST")
   port = nconf.get("HUBOT_CONFLUENCE_PORT")
   protocol = nconf.get("HUBOT_CONFLUENCE_PROTOCOL")
+  no_context = nconf.get("HUBOT_CONFLUENCE_NO_CONTEXT_ROOT")
+  rest_prototype = nconf.get("HUBOT_CONFLUENCE_REST_PROTOTYPE")
 
   url = "#{protocol}://#{host}:#{port}/wiki"
+  if no_context
+    url = "#{protocol}://#{host}:#{port}"
   if api
-    url = "#{url}/rest/api#{suffix}"
+    if rest_prototype
+      url = "#{url}/rest/prototype/latest#{suffix}"
+    else
+      url = "#{url}/rest/api#{suffix}"
   else
-    url = "#{url}#{suffix}"
+    if rest_prototype
+      suffix = suffix.replace /\[/, ""
+      suffix = suffix.replace /\]/, ""
+      suffix = suffix.replace /:/, "/"
+      suffix = suffix.replace /\s/g, "%20"
+      url = "#{url}/display/#{suffix}"
+    else
+      url = "#{url}#{suffix}"
 
 help = (msg) ->
   commands = [

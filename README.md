@@ -47,6 +47,8 @@ _Optional_:
 	HUBOT_CONFLUENCE_NUM_RESULTS  	#The number of results to return. Defaults to 1.
 	HUBOT_CONFLUENCE_TIMEOUT  		#Timeout in ms for requests to confluence. Default is no timeout
 	HUBOT_CONFLUENCE_PROTOCOL     #Configure the protocol to use to connect to confluence (default: https, common use cases: http, https)
+	HUBOT_CONFLUENCE_NO_CONTEXT_ROOT     #If the deployment is to wiki.example.com instead of example.com/wiki set this to 'true'
+	HUBOT_CONFLUENCE_REST_PROTOTYPE     #If connecting to a pre-5.5 deployment of confluence
 
 
 ##Commands
