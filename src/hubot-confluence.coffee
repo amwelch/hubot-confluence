@@ -143,7 +143,6 @@ make_url = (suffix, api) ->
       url = "#{url}/rest/api#{suffix}"
   else
     if rest_prototype
-      debugger
       suffix = suffix.replace /\[/, ""
       suffix = suffix.replace /\]/, ""
       suffix = suffix.replace /:/, "/"
