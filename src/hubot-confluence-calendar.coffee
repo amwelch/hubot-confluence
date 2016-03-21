@@ -45,8 +45,6 @@ sanity_check_args = (res) ->
 # To use multiple calendars copy the cronJobs and change the arguements to different calendars
 
 module.exports = (robot) ->
-  #when bot starts for first time will check for todays calendar events
-  checkForDailyUpdates(robot)
   cronJob = require('cron').CronJob
 
   #required arguements
@@ -60,6 +58,9 @@ module.exports = (robot) ->
   calendarPage = ''
   channelToPost = '#general'
   timeToCheckForDailyUpdate = '10' #Value should be a 24 hour value e.g. 14 for 2pm, currently at 10am
+  
+  #when bot starts for first time will check for todays calendar events
+  checkForDailyUpdates(robot, calendarUrl, calendarName, calendarPage, channelToPost)
 
   #schedules a cronJob to run every day at 10am
   #will send a notification to general channel with todays events
