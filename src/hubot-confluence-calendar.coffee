@@ -102,11 +102,11 @@ checkForDailyUpdates = (robot, calendarUrl, calendarName, calendarPage, channelT
       reg = new RegExp("DTSTART;VALUE=DATE:#{datestring}\\r\\n.*\\r\\nSUMMARY:([\\s\\S]*?)UID:","gi")
 
       match = reg.exec(body)
-        fields.fields.push {
-          title: "Event:"
-          value: match[1]
-          short: false
-        }
+      fields.fields.push {
+        title: "Event:"
+        value: match[1]
+        short: false
+      }
 
       #Check if any events were found for today if not do nothing
       if fields.fields[0] is null or undefined
