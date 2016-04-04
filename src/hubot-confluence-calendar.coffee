@@ -52,6 +52,8 @@ module.exports = (robot) ->
   switchBoard = new Conversation(robot)
 
   robot.respond /add calendar (.*)/i, (res) ->
+    if sanity_check_args(res) is false
+      return
     channelToPost = res.message.room
     dialog = switchBoard.startDialog(res)
     calendarName = res.match[1]
@@ -84,6 +86,8 @@ module.exports = (robot) ->
           res4.reply("New calendar: #{calendarName} added to #{res4.message.room}")
 
   robot.respond /show calendars/i, (res) ->
+    if sanity_check_args(res) is false
+      return
     calendarsForRoom = getCalendarsForRoom(res.message.room)
     if calendarsForRoom.length is 0
       res.reply("Currently no confluence calendars setup in this room")
@@ -118,6 +122,8 @@ module.exports = (robot) ->
       attachments: [attachment]
 
   robot.respond /delete calendar (.*)/i, (res) ->
+    if sanity_check_args(res) is false
+      return
     deleteCalendar(res, res.match[1])
 
   getCalendarsForRoom = (room) ->
@@ -184,7 +190,6 @@ module.exports = (robot) ->
         #Todays date in ical format
         d = new Date();
         datestring = "#{d.getFullYear()}[?:0]?#{d.getMonth()+1}[?:0]?#{d.getDate()}"
-        datestring = "20160401"
 
         #Match full VEVENT today
         reg = new RegExp("(DTSTART;VALUE=DATE:#{datestring}[\\s\\S]*?END:VEVENT)","g")
