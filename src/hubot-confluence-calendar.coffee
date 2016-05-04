@@ -28,14 +28,9 @@ require('datejs')
 #Set how many minutes before an event to post in slack
 reminderMinutesBefore = "15"
 
-#current working directory
-cwd = process.cwd()
-DEFAULTS_FILE = "#{__dirname}/data/defaults.json"
-
 #setup nconf
 nconf.argv()
     .env()
-    .file('defaults', DEFAULTS_FILE)
 
 sanity_check_args = (res) ->
   required_args = [
@@ -135,14 +130,6 @@ module.exports = (robot) ->
       return
     deleteCalendar(robot, res, res.match[1])
 
-  #TODO delete this method!
-  robot.respond /show events (.*)/i, (res) ->
-    calendars = getCalendarsForRoom(robot, res.message.room)
-    cal = _.where calendars, name: res.match[1]
-    checkForEvents(robot, cal[0].url, cal[0].name, res.message.room, cal[0].zone, "day")
-    checkForEvents(robot, cal[0].url, cal[0].name, res.message.room, cal[0].zone, "timed")
-    checkForEvents(robot, cal[0].url, cal[0].name, res.message.room, cal[0].zone, "recurring")
-
 getCalendars = (robot) ->
   robot.brain.get('calendars') or []
 
@@ -234,18 +221,26 @@ checkForEvents = (robot, calendarUrl, calendarName, channelToPost, timezone, typ
     .headers(headers)
     .get() (error, response, body) ->
       if error
-        console.log("Hubot-confluence-calendar revieved and error from #{calendarUrl} while trying to check for daily updates on #{calendarName}")
+        console.log("Hubot-confluence-calendar revieved and error from #{calendarUrl} while trying to check for updates on #{calendarName}")
         console.log(error)
         return
 
       if response.statusCode isnt 200
-        console.log("Hubot-confluence-calendar revieved a response code which wasn't 200 from #{calendarUrl} while trying to check for daily updates on #{calendarName}")
+        console.log("Hubot-confluence-calendar revieved a response code which wasn't 200 from #{calendarUrl} while trying to check for updates on #{calendarName}")
         console.log("Status Code: " + response.statusCode)
         console.log("Response body:")
         console.log(body)
+        attachment =
+          fallback: "Calendar notification"
+          title: "Error while check for updates on #{calendarName}"
+          text: "Hubot recieved an invalid response while checking for updates. Try removing the calendar from channel using \'@robot remove calendar [calendar name]\' and re-adding it."
+          color: "#dd0000"
+        robot.adapter.customMessage
+          channel: channelToPost
+          username: robot.name
+          attachments: [attachment]
         return
 
-      console.log("Checking for events on #{calendarName}")
       #Check for all day events
       if type is "day"
         datestring = Date.today().setTimeToNow().addMinutes(-moment.tz.zone(timezone).offset(moment.utc())).toString('yyyyMMdd')
