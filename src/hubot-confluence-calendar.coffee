@@ -135,6 +135,14 @@ module.exports = (robot) ->
       return
     deleteCalendar(robot, res, res.match[1])
 
+  #TODO delete this method!
+  robot.respond /show events (.*)/i, (res) ->
+    calendars = getCalendarsForRoom(robot, res.message.room)
+    cal = _.where calendars, name: res.match[1]
+    checkForEvents(robot, cal[0].url, cal[0].name, res.message.room, cal[0].zone, "day")
+    checkForEvents(robot, cal[0].url, cal[0].name, res.message.room, cal[0].zone, "timed")
+    checkForEvents(robot, cal[0].url, cal[0].name, res.message.room, cal[0].zone, "recurring")
+
 getCalendars = (robot) ->
   robot.brain.get('calendars') or []
 
@@ -237,6 +245,7 @@ checkForEvents = (robot, calendarUrl, calendarName, channelToPost, timezone, typ
         console.log(body)
         return
 
+      console.log("Checking for events on #{calendarName}")
       #Check for all day events
       if type is "day"
         datestring = Date.today().setTimeToNow().addMinutes(-moment.tz.zone(timezone).offset(moment.utc())).toString('yyyyMMdd')
@@ -267,7 +276,7 @@ checkForEvents = (robot, calendarUrl, calendarName, channelToPost, timezone, typ
           time = {hour:parseInt(starttime.substring(0,2)), minute:parseInt(starttime.substring(2,4))}
           timeout = new Date(Date.today().set(time).addMinutes(-reminderMinutesBefore)).getTime()-Date.now()
 
-          delay fireTimedEvent, timeout, robot, channelToPost, attachment
+          delay fireTimedEvent, timeout, robot, channelToPost, attachment, calendarName
       #check for recurring events
       else if type is "recurring"
         reg = new RegExp("BEGIN:VEVENT((?:(?!\\b(?:END|BEGIN):VEVENT\\b)[\\s\\S])*RRULE:(.*)[\\s\\S]*?)END:VEVENT","g")
@@ -333,6 +342,9 @@ checkForEvents = (robot, calendarUrl, calendarName, channelToPost, timezone, typ
               attachment = extractEvent(fullEvent, calendarUrl, calendarName, channelToPost, timezone, type)
 
               if type is "timed"
+                #if timed event is less than the time left in the add calculate it for tomorrow
+                if nextstartdate.getTime() - (Date.today().addHours(24)-Date.now()) < 0
+                  [timeout, nextstartdate, nextenddate] = getNextRecurring(frequency, interval, startdate.addHours(24), enddate.addHours(24))
                 nextstartdate = nextstartdate.addMinutes(15)
 
               attachment.fields.forEach (field) ->
@@ -368,7 +380,12 @@ delay = (func, wait) ->
     func.apply null, argu
   ), wait
 
-fireTimedEvent = (robot, channelToPost, attachment) ->
+fireTimedEvent = (robot, channelToPost, attachment, calendarName) ->
+  calendars = getCalendarsForRoom(robot, channelToPost)
+  cal = _.where calendars, name: calendarName
+  #Check the calendar hasnt been deleted
+  if cal.length is 0
+    return
   robot.adapter.customMessage
     channel: channelToPost
     username: robot.name
