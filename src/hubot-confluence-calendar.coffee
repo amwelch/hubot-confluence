@@ -289,7 +289,7 @@ checkForEvents = (robot, calendarUrl, calendarName, channelToPost, timezone, typ
             enddate = endrecurrance[1]
             timeset = {day:parseInt(enddate.substring(6,8)), month:parseInt(enddate.substring(4,6)), year:parseInt(enddate.substring(0,4))}
             #Check if the end date is in the past or not today
-            if (Date.today().getTime() - Date.today().set(timeset).getTime()) >= 0
+            if (Date.today().getTime() - Date.today().set(timeset).getTime()) > 0
               keepcheck = false
 
           if keepcheck is true
