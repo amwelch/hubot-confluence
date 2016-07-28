@@ -100,7 +100,7 @@ make_url = (suffix, api) ->
   host = nconf.get("HUBOT_CONFLUENCE_HOST")
   port = nconf.get("HUBOT_CONFLUENCE_PORT")
   protocol = nconf.get("HUBOT_CONFLUENCE_PROTOCOL")
-  context_root = nconf.get("HUBOT_CONFLUENCE_CONTEXT_ROOT)
+  context_root = nconf.get("HUBOT_CONFLUENCE_CONTEXT_ROOT")
 
   url = "#{protocol}://#{host}:#{port}/#{context_root}"
   # account for an empty context root
