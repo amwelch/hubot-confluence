@@ -21,6 +21,7 @@ sanity_check_args = (msg) ->
     "HUBOT_CONFLUENCE_HOST"
     "HUBOT_CONFLUENCE_PORT"
     "HUBOT_CONFLUENCE_SEARCH_SPACE"
+    "HUBOT_CONFLUENCE_CONTEXT_ROOT"
   ]
 
   for arg in required_args
@@ -99,8 +100,12 @@ make_url = (suffix, api) ->
   host = nconf.get("HUBOT_CONFLUENCE_HOST")
   port = nconf.get("HUBOT_CONFLUENCE_PORT")
   protocol = nconf.get("HUBOT_CONFLUENCE_PROTOCOL")
+  context_root = nconf.get("HUBOT_CONFLUENCE_CONTEXT_ROOT)
 
-  url = "#{protocol}://#{host}:#{port}/wiki"
+  url = "#{protocol}://#{host}:#{port}/#{context_root}"
+  # account for an empty context root
+  if !context_root?.length
+    url = "#{protocol}://#{host}:#{port}
   if api
     url = "#{url}/rest/api#{suffix}"
   else
