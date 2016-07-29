@@ -105,7 +105,7 @@ make_url = (suffix, api) ->
   url = "#{protocol}://#{host}:#{port}/#{context_root}"
   # account for an empty context root
   if !context_root?.length
-    url = "#{protocol}://#{host}:#{port}
+    url = "#{protocol}://#{host}:#{port}"
   if api
     url = "#{url}/rest/api#{suffix}"
   else
