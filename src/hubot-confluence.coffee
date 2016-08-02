@@ -44,7 +44,7 @@ search = (msg, query, text) ->
   else
     text_search = "title~\"#{query}\""
 
-  query_str = "type=page and space in(#{space}) and #{text_search}"
+  query_str = "type=page+and+space+in(#{space})+and+#{text_search}"
   query_str =  encodeURIComponent query_str
   suffix = "/content/search?os_authType=basic&cql=#{query_str}"
   url = make_url(suffix, true)
