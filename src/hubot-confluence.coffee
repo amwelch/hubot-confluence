@@ -40,9 +40,9 @@ search = (msg, query, text) ->
   timeout = nconf.get("HUBOT_CONFLUENCE_TIMEOUT") or 2000
   space = nconf.get("HUBOT_CONFLUENCE_SEARCH_SPACE")
   if text
-    text_search = "text~\"#{query}\""
+    text_search = "text~#{query}"
   else
-    text_search = "title~\"#{query}\""
+    text_search = "title~#{query}"
 
   query_str = "type=page+and+space+in(#{space})+and+#{text_search}"
   query_str =  encodeURIComponent query_str
